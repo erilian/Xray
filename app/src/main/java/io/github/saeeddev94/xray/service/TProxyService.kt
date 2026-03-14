@@ -30,6 +30,7 @@ import io.github.saeeddev94.xray.database.Profile
 import io.github.saeeddev94.xray.dto.XrayConfig
 import io.github.saeeddev94.xray.helper.ConfigHelper
 import io.github.saeeddev94.xray.helper.FileHelper
+import io.github.saeeddev94.xray.helper.RawConfigHelper
 import io.github.saeeddev94.xray.helper.TransparentProxyHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -151,13 +152,20 @@ class TProxyService : VpnService() {
     private fun getConfig(profile: Profile, globalConfigs: Config): XrayConfig? {
         val dir: File = applicationContext.filesDir
         val config: File = settings.xrayConfig()
-        val configHelper = runCatching { ConfigHelper(settings, globalConfigs, profile.config) }
-        val error: String = if (configHelper.isSuccess) {
-            FileHelper.createOrUpdate(config, configHelper.getOrNull().toString())
+        val rawConfigFile = File(filesDir, "raw_config.json")
+        
+        // Use RawConfigHelper to get config (raw or generated)
+        val rawConfigHelper = RawConfigHelper(settings, globalConfigs, profile.config, rawConfigFile)
+        val finalConfig = rawConfigHelper.getConfig()
+        
+        val error: String = runCatching {
+            FileHelper.createOrUpdate(config, finalConfig)
             XrayCore.test(dir.absolutePath, config.absolutePath)
-        } else {
-            configHelper.exceptionOrNull()?.message ?: getString(R.string.invalidProfile)
-        }
+        }.fold(
+            onSuccess = { it },
+            onFailure = { it.exceptionOrNull()?.message ?: getString(R.string.invalidProfile) }
+        )
+        
         if (error.isNotEmpty()) {
             showToast(error)
             return null

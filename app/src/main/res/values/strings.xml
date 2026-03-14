@@ -58,6 +58,11 @@
     <string name="cancel">Cancel</string>
     <string name="ignore">Ignore</string>
     <string name="ok">OK</string>
+    <string name="rawConfig">Raw Config</string>
+    <string name="rawConfigEnabled">Raw Config Enabled</string>
+    <string name="rawConfigDisabled">Raw Config Disabled</string>
+    <string name="enableRawConfig">Enable Raw Config</string>
+    <string name="saveRawConfig">Save Raw Config</string>
 
     <!-- Basic Settings -->
     <string name="socksAddress">Socks Address</string>

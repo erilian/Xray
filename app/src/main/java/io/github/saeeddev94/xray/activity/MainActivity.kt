@@ -238,6 +238,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.logs -> Intent(applicationContext, LogsActivity::class.java)
             R.id.appsRouting -> Intent(applicationContext, AppsRoutingActivity::class.java)
             R.id.configs -> Intent(applicationContext, ConfigsActivity::class.java)
+            R.id.rawConfig -> Intent(applicationContext, RawConfigActivity::class.java)
             R.id.settings -> Intent(applicationContext, SettingsActivity::class.java)
             else -> null
         }?.let { startActivity(it) }

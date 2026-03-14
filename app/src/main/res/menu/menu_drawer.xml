@@ -42,6 +42,10 @@
             android:icon="@drawable/baseline_config"
             android:title="@string/configs" />
         <item
+            android:id="@+id/rawConfig"
+            android:icon="@drawable/baseline_code"
+            android:title="@string/rawConfig" />
+        <item
             android:id="@+id/settings"
             android:icon="@drawable/baseline_settings"
             android:title="@string/settings" />

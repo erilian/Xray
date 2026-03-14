@@ -160,6 +160,11 @@ class Settings(private val context: Context) {
         get() = sharedPreferences.getBoolean("transparentProxy", false)
         set(value) = sharedPreferences.edit { putBoolean("transparentProxy", value) }
 
+    /** Raw Config */
+    var rawConfigEnabled: Boolean
+        get() = sharedPreferences.getBoolean("rawConfigEnabled", false)
+        set(value) = sharedPreferences.edit { putBoolean("rawConfigEnabled", value) }
+
     fun baseDir(): File = context.filesDir
     fun xrayCoreFile(): File = File(baseDir(), "xray")
     fun xrayHelperFile(): File = File(baseDir(), "xrayhelper")

@@ -23,12 +23,14 @@ import io.github.saeeddev94.xray.database.Profile
 import io.github.saeeddev94.xray.databinding.ActivityProfileBinding
 import io.github.saeeddev94.xray.helper.ConfigHelper
 import io.github.saeeddev94.xray.helper.FileHelper
+import io.github.saeeddev94.xray.helper.RawConfigHelper
 import io.github.saeeddev94.xray.viewmodel.ConfigViewModel
 import io.github.saeeddev94.xray.viewmodel.ProfileViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 
 class ProfileActivity : AppCompatActivity() {
@@ -147,12 +149,17 @@ class ProfileActivity : AppCompatActivity() {
         profile.name = binding.profileName.text.toString()
         profile.config = binding.profileConfig.text.toString()
         lifecycleScope.launch {
-            val configHelper = runCatching { ConfigHelper(settings, config, profile.config) }
-            val error = if (configHelper.isSuccess) {
-                isValid(configHelper.getOrNull().toString())
-            } else {
-                configHelper.exceptionOrNull()?.message ?: getString(R.string.invalidProfile)
-            }
+            val rawConfigFile = File(filesDir, "raw_config.json")
+            val rawConfigHelper = RawConfigHelper(settings, config, profile.config, rawConfigFile)
+            val finalConfig = rawConfigHelper.getConfig()
+            
+            val error = runCatching {
+                isValid(finalConfig)
+            }.fold(
+                onSuccess = { it },
+                onFailure = { it.exceptionOrNull()?.message ?: getString(R.string.invalidProfile) }
+            )
+            
             if (check && error.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
                     showError(error)
