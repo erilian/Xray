@@ -31,7 +31,7 @@ export PATH="$ANDROID_HOME/platform-tools:$PATH"
 export PATH="$ANDROID_HOME/build-tools/$ANDROID_SDK_VERSION:$PATH"
 
 # Clone repo
-git clone https://github.com/SaeedDev94/Xray.git $REPO_DIR
+git clone https://github.com/erilian/Xray.git $REPO_DIR
 cd $REPO_DIR
 git checkout "$RELEASE_TAG"
 git submodule update --init --recursive
