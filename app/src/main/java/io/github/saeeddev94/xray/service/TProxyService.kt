@@ -28,7 +28,6 @@ import io.github.saeeddev94.xray.activity.MainActivity
 import io.github.saeeddev94.xray.database.Config
 import io.github.saeeddev94.xray.database.Profile
 import io.github.saeeddev94.xray.dto.XrayConfig
-import io.github.saeeddev94.xray.helper.ConfigHelper
 import io.github.saeeddev94.xray.helper.FileHelper
 import io.github.saeeddev94.xray.helper.RawConfigHelper
 import io.github.saeeddev94.xray.helper.TransparentProxyHelper
@@ -158,13 +157,16 @@ class TProxyService : VpnService() {
         val rawConfigHelper = RawConfigHelper(settings, globalConfigs, profile.config, rawConfigFile)
         val finalConfig = rawConfigHelper.getConfig()
         
-        val error: String = runCatching {
+        val result = runCatching {
             FileHelper.createOrUpdate(config, finalConfig)
             XrayCore.test(dir.absolutePath, config.absolutePath)
-        }.fold(
-            onSuccess = { it },
-            onFailure = { it.exceptionOrNull()?.message ?: getString(R.string.invalidProfile) }
-        )
+        }
+        
+        val error = if (result.isSuccess) {
+            result.getOrNull() ?: getString(R.string.invalidProfile)
+        } else {
+            result.exceptionOrNull()?.message ?: getString(R.string.invalidProfile)
+        }
         
         if (error.isNotEmpty()) {
             showToast(error)

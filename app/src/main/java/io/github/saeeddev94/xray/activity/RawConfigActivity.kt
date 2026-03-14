@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,6 @@ import com.blacksquircle.ui.editorkit.plugin.linenumbers.lineNumbers
 import com.blacksquircle.ui.editorkit.widget.TextProcessor
 import com.blacksquircle.ui.language.json.JsonLanguage
 import com.google.android.material.materialswitch.MaterialSwitch
-import com.google.android.material.radiobutton.MaterialRadioButton
 import com.google.android.material.tabs.TabLayout
 import io.github.saeeddev94.xray.R
 import io.github.saeeddev94.xray.Settings
@@ -87,6 +85,7 @@ class RawConfigActivity : AppCompatActivity() {
     private fun setup(tab: String, view: View) {
         val config = getRawConfig()
 
+        // Hide mode radio group (not used for raw config)
         val modeRadioGroup = view.findViewById<RadioGroup>(R.id.modeRadioGroup)
         modeRadioGroup.visibility = View.GONE
 

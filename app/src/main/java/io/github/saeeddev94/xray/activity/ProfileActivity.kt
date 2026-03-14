@@ -21,7 +21,6 @@ import io.github.saeeddev94.xray.Settings
 import io.github.saeeddev94.xray.database.Config
 import io.github.saeeddev94.xray.database.Profile
 import io.github.saeeddev94.xray.databinding.ActivityProfileBinding
-import io.github.saeeddev94.xray.helper.ConfigHelper
 import io.github.saeeddev94.xray.helper.FileHelper
 import io.github.saeeddev94.xray.helper.RawConfigHelper
 import io.github.saeeddev94.xray.viewmodel.ConfigViewModel
@@ -153,12 +152,15 @@ class ProfileActivity : AppCompatActivity() {
             val rawConfigHelper = RawConfigHelper(settings, config, profile.config, rawConfigFile)
             val finalConfig = rawConfigHelper.getConfig()
             
-            val error = runCatching {
+            val result = runCatching {
                 isValid(finalConfig)
-            }.fold(
-                onSuccess = { it },
-                onFailure = { it.exceptionOrNull()?.message ?: getString(R.string.invalidProfile) }
-            )
+            }
+            
+            val error = if (result.isSuccess) {
+                result.getOrNull() ?: getString(R.string.invalidProfile)
+            } else {
+                result.exceptionOrNull()?.message ?: getString(R.string.invalidProfile)
+            }
             
             if (check && error.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
